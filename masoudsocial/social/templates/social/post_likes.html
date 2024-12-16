@@ -1,0 +1,20 @@
+{% load thumbnail %}
+{% load static %}
+
+{% for like in likes %}
+	{% if like.photo %}
+		<a href='{% url "social:user_detail" like.username %}'>
+			<img src="{%thumbnail like.photo 150x0 quality=90 %}" alt="">
+		</a>
+	{% else %}
+	<a href='{% url "social:user_detail" like.username %}'>
+		<img src="{% static 'images/profile/Avatar.png' %}" alt="" style="width: 200;">
+	</a>
+	{% endif %}
+
+	<a href='{% url "social:user_detail" like.username %}'>
+		{{ like.get_full_name}}
+	</a>
+	<br>
+{% endfor %}
+				

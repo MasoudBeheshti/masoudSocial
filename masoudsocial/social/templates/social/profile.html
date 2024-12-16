@@ -1,0 +1,224 @@
+{% extends 'parent/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% block title %} profile {% endblock %}
+
+{% block content %}
+
+	<!-- ==============================================
+	 News Feed Section
+	 =============================================== -->
+	<section class="profile-two">
+		<div class="container-fluid">
+			<div class="row">
+
+				<div class="col-lg-3">
+					<aside id="leftsidebar" class="sidebar">
+						<ul class="list">
+							<li>
+								<div class="user-info">
+									<div class="image">
+										<a href="{{user.photo.url}}" alt='#'>
+                                            {% if user.photo %}
+											<img src="{% thumbnail user.photo 500x500 crop='0,0' %}" class="img-responsive img-circle"
+												alt="User">
+                                            {% else %}
+                                                <img src="{% static 'images/profile/Avatar.png' %}" class="img-responsive img-circle">
+                                            {% endif %}
+											<span class="online-status online"></span>
+										</a>
+									</div>
+									<div class="detail">
+										<h4>{{ user.get_full_name }}</h4>
+										<small>{{user.username}}</small>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											
+											{% if user.facebook_id %}
+												<a title="facebook" href="https://facebook.com/{{user.facebook_id}}" class=" waves-effect waves-block"><i
+													class="fab fa-facebook"></i></a>
+											{% endif %}
+											{% if user.twitter_id %}
+												<a title="twitter" href="https://twitter.com/{{user.twitter_id}}?lang=en" class=" waves-effect waves-block"><i
+													class="fab fa-twitter"></i></a>
+											{% endif %}
+											
+											
+
+											{% if user.insta_id %}
+												<a title="instagram" href="https://www.instagram.com/{{user.insta_id}}/" class=" waves-effect waves-block"><i
+												class="fab fa-instagram"></i></a>
+											{% endif %}
+											
+
+												
+											
+											
+										</div>
+									</div>
+								</div>
+							</li>
+							<li>
+								<small class="text-muted"><a href="{% url 'social:post_list_by_username' user.username %}">{{ user.user_posts.count }} پست<em
+											class="fa fa-angle-left pull-left"></em></a> </small><br />
+								<small class="text-muted"><a href="{% url 'social:user_followers' user.username %}">{{ user.followers.count }} دنبال کننده<em
+											class="fa fa-angle-left pull-left"></em></a> </small><br />
+								<small class="text-muted"><a href="{% url 'social:user_following' user.username %}">{{ user.following.count }} نفر را دنبال می کند <em
+											class="fa fa-angle-left pull-left"></em></a> </small>
+								<hr>
+								<small class="text-muted">درباره: </small>
+								<p>{{ user.bio}}</p>
+								<hr>
+								<small class="text-muted">شغل : </small>
+								<p>{{ user.job }} </p>
+                                <hr>
+								<small class="text-muted">تاریخ تولد : </small>
+								<p>{{ user.date_of_birth|date:"Y/m/d"}} </p>
+								<hr>
+							</li>
+						</ul>
+					</aside>
+				</div>
+				<!--/ col-lg-3-->
+
+				<div class="col-lg-6" style="background: #fff;">
+					<!--/ row -->
+
+					<div class="row">
+                    {% for my_post in my_posts %}
+						<div class="col-lg-6">
+							<a href="#myModal-{{ my_post.id }}" data-toggle="modal">
+								<div class="explorebox" style="background: linear-gradient( rgba(34,34,34,0.2), rgba(34,34,34,0.2)), url('{{my_post.images.first.image_file.url}}') no-repeat;
+					  background-size: cover;
+					  background-position: center center;
+					  -webkit-background-size: cover;
+					  -moz-background-size: cover;
+					  -o-background-size: cover;">
+									<div class="explore-top">
+										<div class="explore-like"><i class="fa fa-heart"></i> <span>{{ my_post.total_likes }}</span></div>
+										<div class="explore-circle pull-left"><span>{{ my_post.total_saves }}&nbsp;</span><i class="far fa-bookmark"></i></div>
+									</div>
+								</div>
+							</a>
+						</div>
+                        {% with my_post=my_post post_id=my_post.id %}
+                        {% include 'partials/my-modal.html' %}
+                        {% endwith %}
+                    {% endfor %}
+					</div>
+					<!--/ row -->
+
+				</div>
+				<div class="col-lg-3">
+                    <div class="trending-box">
+						<div class="row">
+							<div class="col-lg-12">
+								<h4>اخرین فالوینگ ها</h4>
+							</div>
+						</div>
+					</div>
+					<div class="suggestion-box full-width">
+						<div class="suggestions-list">
+                            {% for flw in following|slice:"0:5" %}
+							<div class="suggestion-body">
+							<a href='{% url "social:user_detail" flw.username %}'>	
+                            {% if flw.photo %}
+								<img class="img-responsive img-circle" src="{{ flw.photo.url}}" alt="">
+                            {% else %}
+                                <img class="img-responsive img-circle" src="{% static 'images/profile/Avatar.png' %}" alt="">
+                            {% endif %}
+								<div class="name-box">
+									<h4>{{ flw.get_full_name}}</h4>
+									<span>{{flw.username}}</span>
+								</div>
+							</a>
+{#								<span><i class="fa fa-plus"></i></span>#}
+							</div>
+                            {% endfor %}
+						</div>
+						<!--suggestions-list end-->
+					</div>
+
+                      <div class="trending-box">
+						<div class="row">
+							<div class="col-lg-12">
+								<h4>اخرین فالور ها</h4>
+							</div>
+						</div>
+					</div>
+					<div class="suggestion-box full-width">
+						<div class="suggestions-list">
+                            {% for follower in followers|slice:"0:5" %}
+							<div class="suggestion-body">
+							<a href='{% url "social:user_detail" follower.username %}'>	
+                            {% if follower.photo %}
+								<img class="img-responsive img-circle" src="{{ follower.photo.url}}" alt="">
+                            {% else %}
+                                <img class="img-responsive img-circle" src="{% static 'images/profile/Avatar.png' %}" alt="">
+                            {% endif %}
+								<div class="name-box">
+									<h4>{{ follower.get_full_name}}</h4>
+									<span>{{ follower.username }}</span>
+								</div>
+							</a>
+{#								<span><i class="fa fa-plus"></i></span>#}
+							</div>
+                            {% endfor %}
+						</div>
+						<!--suggestions-list end-->
+					</div>
+
+					<div class="trending-box">
+						<div class="row">
+							<div class="col-lg-12">
+								<h4>پست‌های سیو شده شما</h4>
+							</div>
+						</div>
+					</div>
+
+					<div class="trending-box">
+                        {% for post in saved_posts %}
+						<div class="row">
+                        	{% if forloop.counter0|divisibleby:2 %}
+							<div class="col-lg-6">
+								<a href="{{post.get_absolute_url}}"><img src="{{post.images.first.image_file.url}}" class="img-responsive" alt="Image" /></a>
+							</div>
+                            {% else %}
+							<div class="col-lg-6">
+								<a href="{{post.get_absolute_url}}"><img src="{{post.images.first.image_file.url}}" class="img-responsive" alt="Image" /></a>
+							</div>
+                        {% endif %}
+						</div>
+                        {% endfor %}
+
+					</div>
+			</div>
+
+		</div>
+        </div>
+	</section>
+
+
+	<!-- ==============================================
+	 Scripts
+	 =============================================== -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/base.js' %}"></script>
+	<script src="{% static 'plugins/slimscroll/jquery.slimscroll.js' %}"></script>
+	<script>
+		$('#Slim,#Slim2').slimScroll({
+				height:"auto",
+				position: 'right',
+				railVisible: true,
+				alwaysVisible: true,
+				size:"8px",
+			});
+		
+	</script>
+
+{% endblock %}
+

@@ -1,0 +1,9 @@
+{% if query %}
+     {{results.count}}: نتایج جستجو برای {{query}}
+{% endif %}
+    <br>
+    {% for post in results %}
+    <p><a href="{{post.get_absolute_url}}">{{post.description|linebreaks}}</a></p>
+    {%empty%}
+        هیچ نتیجه ای یافت نشد
+    {% endfor %}

@@ -1,0 +1,22 @@
+{% extends 'parent/base.html' %}
+{% block title %} register {% endblock %}
+{% load static %}
+{% block content %}
+
+ <section class="login">
+  <div class="container">
+   <div class="banner-content">
+      <form method="post" class="form-signin">
+           <div class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+           </div>
+           <button class="kafe-btn kafe-btn-mint btn-block">ثبت نام</button>
+           <br/>
+      </form>
+
+   </div><!--/. banner-content -->
+  </div><!-- /.container -->
+ </section>
+
+{% endblock %}

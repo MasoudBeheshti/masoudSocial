@@ -1,0 +1,51 @@
+{% extends 'parent/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% block title %} my tickets {% endblock %}
+{% block content %}
+
+	{% if tickets %}
+		<br>
+		<br>
+		<h2 id=tcmim>تیکت های ارسال شده توسط شما</h2>
+		<br>
+		<ul>
+			{% for ticket in tickets %}
+				<div id=ticket-container>
+					<p>تیکت شما:</p>
+					<p>{{ticket.message|linebreaks}}</p>
+					<br>
+					
+					<hr>
+					{% if ticket.admin_reply %}
+						<p>پاسخ ادمین: {{ticket.admin_reply|linebreaks}}</p>
+					{% else %}
+						<p>هنوز پاسخی به تیکت شما داده نشده است!</p>
+					{% endif %}
+					<hr>
+					<p><small style="color: #888;">ثبت شده در {{ticket.created}}</small></p>
+				</div>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<br>
+		<br>
+		<h2>شما تا کنون تیکتی ارسال نکرده اید!</h2>
+	{% endif %}
+
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/base.js' %}"></script>
+	<script src="{% static 'plugins/slimscroll/jquery.slimscroll.js' %}"></script>
+    <script>
+		$('#Slim,#Slim2').slimScroll({
+				height:"auto",
+				position: 'right',
+				railVisible: true,
+				alwaysVisible: true,
+				size:"8px",
+			});
+		
+	</script>
+
+{% endblock %}

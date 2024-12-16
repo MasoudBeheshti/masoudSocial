@@ -1,0 +1,27 @@
+{% extends 'parent/base.html' %}
+{% block title %} register {% endblock %}
+{% load static %}
+{% block content %}
+    <br><br><br>
+    <h2 id=tcmim>آیا از حذف این پست مطمئن هستید؟</h2>
+    <br>
+    <form method='post' id=tcmim>
+        {% csrf_token %}
+        <input type='submit' value='بله'>
+    </form>
+
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'plugins/slimscroll/jquery.slimscroll.js' %}"></script>
+    <script>
+    $('#Slim,#Slim2').slimScroll({
+            height:"auto",
+            position: 'right',
+            railVisible: true,
+            alwaysVisible: true,
+            size:"8px",
+        });
+    </script>
+{% endblock %}

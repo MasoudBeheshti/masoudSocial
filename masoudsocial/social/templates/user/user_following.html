@@ -1,0 +1,173 @@
+{% extends 'parent/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% block title %} following list {% endblock %}
+
+{% block content %}
+	<br>
+	<h1 id=tcmim>لیست دنبال شوندگان توسط<a href='{% url "social:user_detail" user.username %}' style="color: black; margin-right: 15px;">{{user.username}}</a></h1>
+	<br><br>
+	<section class="followers">
+		<div class="container-fluid">
+		 <div class="row">
+  
+		  <div class="col-lg-8 col-lg-offset-2">
+  
+		   <div class="followers-box full-width">
+			  <div class="followers-list">
+				  {% for user in following %}
+					  <div class="followers-body">
+					  <a href="{% url 'social:user_detail' user.username %}">
+						  
+						  {% if user.photo %}
+							  <img class="img-responsive img-circle" src="{{ user.photo.url }}" alt="">
+						  {% else %}
+							  <img src="{% static 'images/profile/Avatar.png' %}" alt="" style="width: 200;">
+						  {% endif %}
+							  
+					  </a>
+				   <div class="name-box">
+					<h4>{{ user.get_full_name}}</h4>
+					<span>{{ user.username }}</span>
+					<div class="followers-base">
+					 <ul class="list-group">
+					  <li class="list-group-item full-width">
+					   <div class="pull-right" style="margin-left: 20px;">
+						  <span id='followers-pics-{{user.id}}'>
+						   {% for follower in user.followers.all|slice:"0:5" %}
+							   
+							  {% if follower.photo %}
+								  <img src="{{ follower.photo.url}}" alt="" class="img-circle max-w-40 ">
+							  {% else %}
+								  <img src="{% static 'images/profile/Avatar.png' %}" alt="" style="width: 200;" class="img-circle max-w-40 ">
+							  {% endif %}
+								  
+						   {% endfor %}
+						  </span>
+					   <a href="{% url 'social:user_followers' user.username %}">
+						<button class="btn btn-add-gray">
+								<i class="fa fa-plus"></i>
+						</button>
+					   </a>
+					   
+						<span id='followers-count-{{ user.id }}'>{{user.followers.count}} دنبال کننده</span>
+					   </div><!--/ pull-left -->
+					  </li>
+					  <li class="list-group-item full-width">
+					   <div class="pull-right">
+						<span id='following-pics-{{ user.id }}'>
+						   {% for following in user.following.all|slice:"0:4" %}
+							   
+							  {% if following.photo %}
+								  <img src="{{ following.photo.url }}" alt="" class="img-circle max-w-40 ">
+							  {% else %}
+								  <img src="{% static 'images/profile/Avatar.png' %}" alt="" style="width: 200;" class="img-circle max-w-40 ">
+							  {% endif %}
+						  {% endfor %}
+						</span>
+						<a href="{% url 'social:user_following' user.username %}">
+						<button class="btn btn-add-gray">
+								<i class="fa fa-plus"></i>
+						</button>
+					   </a>
+						<span id='following-count-{{ user.id }}'> {{ user.following.count}} نفر را دنبال می کند</span>
+					   </div><!--/ pull-right -->
+					  </li><!--/ list-group-item -->
+					 </ul>
+					</div><!--/ followers-base -->
+				   </div><!--/ name-box -->
+				   {% comment %} <span><a href="#" class="kafe-btn kafe-btn-mint-small">دنبال کردن</a></span> {% endcomment %}
+					  <div>
+						  {% if request.user == user %}
+								  {% if request.user in user.followers.all%}
+									  <button class="kafe-btn kafe-btn-default-mint" deactive> فالو </button>
+								  {% endif %}
+						  {% else %}
+								  {% if request.user in user.followers.all%}
+									  <button class="kafe-btn kafe-btn-danger" id="follow-button-{{ user.id }}" > آنفالو </button>
+								  {% else %}
+									  <button class="kafe-btn kafe-btn-mint" id="follow-button-{{ user.id }}" > فالو </button>
+								  {% endif %}
+						  {% endif %}
+						  <!--/ dropdown -->
+					  </div>
+				  </div><!--/ followers-body -->
+				  {% endfor %}
+  
+			  </div><!--suggestions-list end-->
+		  </div>
+  
+		  </div>
+  
+		 </div><!--/ row-->
+		</div><!--/ container -->
+	   </section><!--/ profile -->
+  
+	   <!-- ==============================================
+	   Scripts
+	   =============================================== -->
+	  <script src="{% static 'js/jquery.min.js' %}"></script>
+	  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+	  <script src="{% static 'js/base.js' %}"></script>
+	  <script src="{% static 'plugins/slimscroll/jquery.slimscroll.js' %}"></script>
+	  <script>
+		var current_user_id={{request.user.id}}
+	  </script>
+	  <script>
+	  $('#Slim,#Slim2').slimScroll({
+			  height:"auto",
+			  position: 'right',
+			  railVisible: true,
+			  alwaysVisible: true,
+			  size:"8px",
+		  });
+	  </script>
+  
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	  <script>
+		  function pruralize(data){
+			  if (data > 1 || data === 0) {
+				  return "s"
+			  } else {
+				  return ''
+			  }
+		  }
+		  $(document).ready(function() {
+	  $('[id^=follow-button]').click(function() {
+		  var button = $(this);
+  
+		  // Extract the user ID from the button ID
+		  var userId = button.attr('id').split('-')[2];
+  
+		  $.ajax({
+			  type: 'POST',
+			  url: '{% url "social:user_follow" %}',
+			  data: {'id': userId, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+			  success: function(data) {
+				  if (data.follow){
+					  button.removeClass('kafe-btn-mint');
+					  button.addClass('kafe-btn-danger');
+					  button.text('آنفالو');
+					  $('#followers-pics-' + userId).append('<img src="' + data.follower_image_url + '" alt="" class="img-circle max-w-40">');
+					  $('#following-pics-' + current_user_id).append('<img src="' + data.following_image_url + '" alt="" class="img-circle max-w-40">');
+					
+				  } else {
+					  button.removeClass('kafe-btn-danger');
+					  button.addClass('kafe-btn-mint');
+					  button.text('فالو');
+					  $('#followers-pics-' + userId + ' img[src="' + data.follower_image_url + '"]').remove();
+					  $('#following-pics-' + current_user_id + ' img[src="' + data.following_image_url + '"]:first').remove();
+					
+				  }
+				  // Update followers count for the specific user
+				  $('#followers-count-' + userId).text(data.followers_count+ ' دنبال کننده');
+				  $('#following-count-' + current_user_id).text(data.current_user_following_count+ ' نفر را دنبال می کند');
+                
+				  // Update following count for the specific user
+				  // $('#following-count-' + request.user.id).text(data.following_count);
+			  },
+		  });
+	  });
+  });
+	  </script>
+{% endblock %}

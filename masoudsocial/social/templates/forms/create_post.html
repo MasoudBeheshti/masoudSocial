@@ -1,0 +1,70 @@
+{% extends 'parent/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% block title %} profile {% endblock %}
+
+{% block content %}
+
+
+    <section class="upload text-right">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="box " >
+                        <form method="post" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class='edit images'>
+                                {% if post %}
+                                    {% for img in post.images.all %}
+                                        <img width='300px' height='300px' src='{{img.image_file.url}}' alt='Image'>
+                                        <a href='{% url "social:delete_image" img.id %}' style="color: black;">حذف تصویر</a>
+                                        <br>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        <div class="box-footer clearfix">
+                            <button class="kafe-btn kafe-btn-mint-small"><i class="fa fa-camera"></i> بارگذاری </button>
+                        </div>
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!--/ container -->
+    </section>
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/base.js' %}"></script>
+	<script src="{% static 'plugins/slimscroll/jquery.slimscroll.js' %}"></script>
+	
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $(document).ready(function() {
+            var imagesCount = $('.edit.images img').length;
+            if (imagesCount >= 1) {
+                $('#id_image1').parent().hide();
+            }
+            if (imagesCount >= 2) {
+                $('#id_image2').parent().hide();
+            }
+        });
+    </script>
+    
+    
+    <script>
+	$('#Slim,#Slim2').slimScroll({
+	        height:"auto",
+			position: 'right',
+			railVisible: true,
+			alwaysVisible: true,
+			size:"8px",
+		});
+	</script>
+{% endblock %}
+

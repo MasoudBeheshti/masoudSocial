@@ -1,0 +1,183 @@
+{% load static %}
+<!--/ profile -->
+	<div id="myModal-{{ post_id }}" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+
+					<div class="row">
+
+						<div class="col-md-8 modal-image">
+							{% if my_post.images.count > 1 %}
+                                        <div style="position: relative;">
+                                            <button id="previous-image-btn" class='previous-image-btn-{{ post_id }}' style="position: absolute; left: 0; top: 5%; transform: translateY(-50%);"><img src="{% static 'images/icons/chevron-direction-left-outline-icon.svg' %}" alt="previous Image"></button>
+                                            <button id="next-image-btn" class='next-image-btn-{{ post_id }}' style="position: absolute; right: 0; top: 5%; transform: translateY(-50%);"><img src="{% static 'images/icons/chevron-direction-right-outline-icon.svg' %}" alt="Next Image"></button>
+                                            <div class="image-container">
+                                            <img class="img-responsive" src="{{my_post.images.first.image_file.url}}" alt="Image" />
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <img class="img-responsive" src="{{my_post.images.first.image_file.url}}" alt="Image" />
+                                    {% endif %}
+								<br>
+							<div class="text-center">
+										<p class="text-dark">
+											{{ my_post.description }}
+										</p>
+									</div>
+                                <br>
+                                    <div class="text-center">
+                                        {% for tag in my_post.tags.all %}
+                                           <a class="text-dark" href="{% url 'social:post_list_by_tag' tag.slug %}">
+                                               <button> {{ tag.name }}</button>
+                                           </a>
+                                            {% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+										
+                                        </div>						</div>
+                    <br>
+						<!--/ col-md-8 -->
+						<div class="col-md-4 modal-meta">
+							<div class="modal-meta-top">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+									<span aria-hidden="true">×</span><span class="sr-only">بستن</span>
+								</button>
+		
+								<!--/ button -->
+								<div class="img-poster clearfix">
+									<a href="#"><img class="img-responsive img-circle" src="{{ user.photo.url}}"
+											alt="Image" /></a>
+									<strong><a href="#">{{ user.get_full_name }}</a></strong>
+									<br>
+									<br>
+									<a class="close" href='{% url "social:edit_post" post_id %}' style='color: black;margin-left: 40px;'>ویرایش پست</a>
+									<a class="close" href='{% url "social:delete_post" post_id %}' style='color: black;margin-left: 40px;''>حذف پست</a>
+										
+{#									<span>12 دقیقه پیش</span><br />#}
+{#									<a href="#" class="kafe kafe-btn-mint-small"><i class="fa fa-check-square"></i>#}
+{#										دنبال کردن</a>#}
+								</div>
+								<!--/ img-poster -->
+
+								<ul class="img-comment-list">
+                                    {% for comment in my_post.comments.all %}
+									<!--/ li -->
+									<li>
+										<div class="comment-img">
+											<a href="{% url 'social:user_detail' comment.writer.username %}">{% if comment.writer.photo %}<img class="img-responsive img-circle" src="{{comment.writer.photo.url}}" alt="Image">{% else %}<img src="{% static 'images/profile/avatar2.png' %}" class="img-responsive img-circle" alt="Image" />{% endif %}</a>
+										</div>
+										<div class="comment-text">
+											<strong><a href="#">{{ comment.writer.username }}</a></strong>
+											<p class="">{{ comment.body }}</p> <span class="date sub-text"> در {{ comment.created }} </span>
+										</div>
+									</li>
+									<!--/ li -->
+                                    {% endfor %}
+								</ul>
+								<!--/ comment-list -->
+
+								<div class="modal-meta-bottom">
+									<ul>
+										<li>
+											<a class="modal-like" href="#">
+                                                {% if request.user in my_post.likes.all%}
+                                                <i class="fa fa-heart" id="like-button-{{ post_id }}"> UnLike </i>
+                                                {% else %}
+                                                <i class="fa fa-heartbeat" id="like-button-{{ post_id }}"> like </i>
+                                                {% endif %}
+                                            </a>
+                                            <span class="modal-one" id="likes-count"> {{ my_post.total_likes }}</span> |
+											<a class="modal-comment" href="#"><i class="fa fa-comments"></i></a><span class='comments-count'>
+												{{ my_post.comments.count}}</span>
+										</li>
+										<li>
+											<span class="thumb-xs">
+												{% if user.photo %}
+                                                <img class="img-responsive img-circle" src="{{user.photo.url}}" alt="Image">
+                                                {% else %}
+                                                    <img class="img-responsive img-circle" src="{% static 'images/profile/avatar2.webp' %}" alt="Image">
+                                                {% endif %}
+											</span>
+											<div class="comment-body">
+                                                <form method="post" action="{% url 'social:post_comment' post_id %}" >
+                                                    {% csrf_token %}
+                                                    {{ form.as_div }}
+                                                  <div class="col-12">
+                                                    <button type="submit" class="btn btn-dark">ثبت</button>
+                                                  </div>
+                                                </form>
+											</div>
+											<!--/ comment-body -->
+										</li>
+									</ul>
+								</div>
+								<!--/ modal-meta-bottom -->
+
+							</div>
+							<!--/ modal-meta-top -->
+						</div>
+						<!--/ col-md-4 -->
+
+					</div>
+					<!--/ row -->
+				</div>
+				<!--/ modal-body -->
+
+			</div>
+			<!--/ modal-content -->
+		</div>
+		<!--/ modal-dialog -->
+	</div>
+	<!--/ modal -->
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script>
+		$(document).ready(function() {
+			$('#like-button-{{ post_id }}').click(function() {
+				var button = $(this);
+	
+				$.ajax({
+					type: 'POST',
+					url: '{% url "social:like_post" %}',
+					data: {'post_id': {{post_id}}, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+					success: function(data) {
+						if (data.liked) {
+							button.text(' UnLike');
+							button.removeClass('fa-heartbeat');
+							button.addClass('fa-heart');
+						} else {
+							button.text(' Like');
+							button.removeClass('fa-heart');
+							button.addClass('fa-heartbeat');
+						}
+						$('#likes-count').text(data.likes_count);
+					},
+				});
+			});
+			$('.next-image-btn-{{ post_id }}').click(function() {
+				$.ajax({
+					url: "{% url 'social:get_next_image' %}",
+					type: "POST",
+					data: { 'csrfmiddlewaretoken': '{{ csrf_token }}', 'post_id': {{post_id}} },
+					success: function(data) {
+						$('.image-container').html('<img class="img-responsive" src="' + data.image_file_url + '" alt="Image" />');
+					}
+				});
+			});
+	
+			$('.previous-image-btn-{{ post_id }}').click(function() {
+				$.ajax({
+					url: "{% url 'social:get_previous_image' %}",
+					type: "POST",
+					data: { 'csrfmiddlewaretoken': '{{ csrf_token }}', 'post_id': {{post_id}} },
+					success: function(data) {
+						$('.image-container').html('<img class="img-responsive" src="' + data.image_file_url + '" alt="Image" />');
+					}
+				});
+			});
+		});
+	</script>
+
+   
+
+

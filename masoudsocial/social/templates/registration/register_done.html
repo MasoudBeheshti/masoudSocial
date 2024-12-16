@@ -1,0 +1,12 @@
+{% extends 'parent/base.html' %}
+{% block title %} register {% endblock %}
+{% load static %}
+{% block content %}
+    <div>
+        <h1 id='tcmim'>عزیز {{user.first_name}}</h1>
+        <p id='tcmim'>ثبت نام شما با موفقیت انجام شد</p>
+        <p id='tcmim'><a href='{% url "social:login" %}' id='tcmim' style="color: black;">ورود به حساب کاربری</a></p>
+    </div>
+    
+
+{% endblock %}

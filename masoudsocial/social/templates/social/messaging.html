@@ -1,0 +1,26 @@
+{% extends 'parent/base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% block title %} profile {% endblock %}
+
+{% block content %}
+    <br><br><br>
+    <h1 id=tcmim>این بخش به زودی راه اندازی خواهد شد!</h1>
+
+
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/base.js' %}"></script>
+	<script src="{% static 'plugins/slimscroll/jquery.slimscroll.js' %}"></script>
+	<script>
+		$('#Slim,#Slim2').slimScroll({
+				height:"auto",
+				position: 'right',
+				railVisible: true,
+				alwaysVisible: true,
+				size:"8px",
+			});
+		
+	</script>
+{% endblock %}

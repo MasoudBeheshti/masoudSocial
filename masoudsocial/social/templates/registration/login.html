@@ -1,0 +1,26 @@
+{% extends 'parent/base.html' %}
+{% block title %} login {% endblock %}
+{% load static %}
+{% block content %}
+
+ <section class="login">
+  <div class="container">
+   <div class="banner-content">
+
+      <form method="post" class="form-signin">
+           <h3 class="form-signin-heading"> شماره تلفن و پسورد را وارد کنید </h3>
+           <div class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+           </div>
+           <button class="kafe-btn kafe-btn-mint btn-block" type="hidden" name="next", value="{{ next }}">وارد شوید</button>
+           <br/>
+           <a class="btn btn-dark " href="{% url 'social:register' %}" role="button">هنوز حساب کاربری ندارید؟ اینجا ثبت نام کنید.</a>
+           <a class="btn btn-dark " href="{% url 'social:password_reset' %}" role="button">پسورد خود را فراموش کرده اید؟</a>
+      </form>
+
+   </div><!--/. banner-content -->
+  </div><!-- /.container -->
+ </section>
+
+{% endblock %}
