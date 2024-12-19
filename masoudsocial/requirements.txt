@@ -1,0 +1,10 @@
+asgiref==3.8.1
+Django==5.1.4
+django-debug-toolbar==4.4.6
+django-resized==1.0.3
+django-taggit==6.1.0
+easy-thumbnails==2.10
+pillow==11.0.0
+psycopg2==2.9.10
+sqlparse==0.5.3
+tzdata==2024.2

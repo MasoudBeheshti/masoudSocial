@@ -322,12 +322,12 @@ def user_detail(request, username):
 @require_POST 
 def user_follow(request):
     user_id = request.POST.get('id') #chizie k az smte ajax ersal mishe in id
-    follower_image_url = request.user.photo.url
+    follower_image_url = request.user.photo.url if request.user.photo else "{% static 'images/profile/Avatar.png' %}"
     
     if user_id:
         try:
             user = User.objects.get(id=user_id)
-            following_image_url = user.photo.url
+            following_image_url = user.photo.url if request.user.photo else "{% static 'images/profile/Avatar.png' %}"
             if request.user in user.followers.all(): 
                 Contact.objects.filter(user_from=request.user, user_to=user).delete()#request.user khodemunim ps userfrom e. uni k az ajax ersal mishe user to e k mikhaim follo knimesh msln ya unfollow. tu like ina az field e many to many mun delete mikrdim un usero. vli inja chon jdvl khodemune ertebatate usero azash peyda miknim pak miknim
                 follow = False

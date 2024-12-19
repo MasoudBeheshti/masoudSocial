@@ -45,7 +45,7 @@
 		
 								<!--/ button -->
 								<div class="img-poster clearfix">
-									<a href="#"><img class="img-responsive img-circle" src="{{ user.photo.url}}"
+									<a href="#"><img class="img-responsive img-circle" {% if user.photo %}src="{{ user.photo.url}}"{% else %}src="{% static 'images/profile/Avatar.png' %}"{% endif %}
 											alt="Image" /></a>
 									<strong><a href="#">{{ user.get_full_name }}</a></strong>
 									<br>

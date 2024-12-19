@@ -33,9 +33,9 @@ class User(AbstractUser):
     
 
     def delete(self,*args,**kwargs): 
-        storage,path= self.photo.storage, self.photo.path
-        print(path)
-        storage.delete(path)
+        if self.photo:
+            storage,path= self.photo.storage, self.photo.path
+            storage.delete(path)
         super().delete(*args,**kwargs)
 
 class Post(models.Model):
@@ -138,7 +138,7 @@ class Ticket(models.Model):
     user= models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_tickets",default=1, verbose_name='نویسنده')
     email=models.EmailField(verbose_name='ایمیل')
     phone=models.CharField(max_length=11, verbose_name='شماره تماس')
-    subject=models.CharField(verbose_name='موضوع')
+    subject=models.CharField(max_length=100,verbose_name='موضوع')
     admin_reply=models.TextField(verbose_name='پاسخ ادمین', default='') 
     created = models.DateTimeField(auto_now_add=True)
     

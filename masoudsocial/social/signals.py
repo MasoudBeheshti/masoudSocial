@@ -80,15 +80,15 @@ def create_logout_activity(sender, user, **kwargs):
     activity.save()
 
 
-@receiver(post_save,sender=User,) 
-def default_photo_after_registrations(sender,instance,**kwargs):
-    if not instance.photo:
-        instance.photo=r"C:\Users\masoud\Desktop\djangoProject\masoudsocial\media\Avatar.png"
-        instance.save()
+# @receiver(post_save,sender=User,) 
+# def default_photo_after_registrations(sender,instance,**kwargs):
+#     if not instance.photo:
+#         instance.photo=r"C:\Users\masoud\Desktop\djangoProject\masoudSocial\masoudsocial\media\Avatar.png"
+#         instance.save()
 
 
-@receiver(pre_delete,sender=User,) 
-def default_photo_after_deleting_photo(sender,instance,**kwargs):
-    if not instance.photo:
-        instance.photo=r"C:\Users\masoud\Desktop\djangoProject\masoudsocial\media\Avatar.png"
-        instance.save()
+# @receiver(pre_delete,sender=User,) 
+# def default_photo_after_deleting_photo(sender,instance,**kwargs):
+#     if not instance.photo:
+#         instance.photo=r"C:\Users\masoud\Desktop\djangoProject\masoudSocial\masoudsocial\media\Avatar.png"
+#         instance.save()
