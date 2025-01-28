@@ -140,7 +140,7 @@ ENV/
 env.bak/
 venv.bak/
 envfgr.bak/
-
+settings.py
 # Spyder project settings
 .spyderproject
 .spyproject

@@ -31,16 +31,16 @@
 
 			<div class="row top-row">
 				{% for user in latest_users %}
-				<div class="col-lg-3">
+				<div class="col-lg-3" >
 					<div class="tr-section">
 						<div class="tr-post">
 							<div class="entry-header">
 								<div class="entry-thumbnail">
                                 <a href="{% url 'social:user_detail' user.username %}">
                                     {% if user.photo %}
-									<img class="img-fluid" src="{{ user.photo.url}}" alt="Image">
+									<img class="img-fluid" src="{{ user.photo.url}}" alt="Image" style="object-fit: cover; width: 100%; height: auto;">
                                     {% else %}
-                                       <img class="img-fluid" src="{% static 'images/profile/Avatar.png' %}" alt="Image">
+                                       <img class="img-fluid" src="{% static 'images/profile/Avatar.png' %}" alt="Image" style="object-fit: cover; width: 100%; height: auto;">
                                     {% endif %}
                                 </a>
 								</div><!-- /entry-thumbnail -->

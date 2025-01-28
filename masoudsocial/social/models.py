@@ -15,7 +15,7 @@ class User(AbstractUser):
     job=models.CharField(max_length=250, verbose_name='شغل', null=True,blank=True)
     phone=models.CharField(max_length=11, verbose_name='شماره تلفن', null=False,blank=False,default='')
     email=models.CharField(max_length=50, verbose_name='ایمیل', null=False,blank=False,default='')
-    following = models.ManyToManyField('self', through='Contact', related_name="followers", symmetrical=False)#b shekle self nveshtn dqqt kn. ba through moshakhas mikni table miani chie. related name bar axe following bayad bashe. symmetrical neshun mide rabete motaqaren bashe, yni age yki follow krdet to hm khodkar follow nknish! default e django ine k khodkar follow mikne. 
+    following = models.ManyToManyField('self', through='Contact', related_name="followers", symmetrical=False) 
     insta_id=models.CharField(max_length=30, null=True, blank=True)
     twitter_id=models.CharField(max_length=30, null=True, blank=True)
     facebook_id=models.CharField(max_length=30, null=True, blank=True)
@@ -151,10 +151,10 @@ class Ticket(models.Model):
 
 
 
-class Activity(models.Model):#ye model misazim ba field hayi k lazem dre k save she tu database kara karbar
+class Activity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_activities",default=1, verbose_name='کاربر')
-    activity_type = models.CharField(max_length=250)#noe activity k ba signal por mishe 
-    timestamp = models.DateTimeField(auto_now_add=True)#zamane activity
+    activity_type = models.CharField(max_length=250)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 
     class Meta:

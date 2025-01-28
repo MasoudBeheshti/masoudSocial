@@ -7,12 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from .models import Post,Image,Contact,Ticket,Activity
 from taggit.models import Tag
-from django.db.models import Count
+from django.db.models import Count,Q
 from django.contrib.postgres.search import TrigramSimilarity
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from django.contrib import messages
-from django.core.serializers import serialize ####vse comment
+from django.core.serializers import serialize 
+
 # Create your views here.
 
 def log_out(request):
@@ -28,7 +29,7 @@ def profile(request):
     saved_posts=user.saved_posts.all()
     tickets=user.user_tickets.all()
     activities = Activity.objects.filter(user=request.user).order_by('-timestamp')[:10]
-    my_posts=user.user_posts.all()[:8]#dqqt kn b nveshtnesh injuri bhtre ta filter
+    my_posts=user.user_posts.all()[:8]
     following=user.get_following()
     followers=user.get_followers()
     context={
@@ -65,7 +66,7 @@ def edit_user(request):
         if user_form.is_valid():
             user_form.save()
             edited=True
-        # return redirect('social:profile') #age bkhai edited true ro ngi va baade save bre b profile msln
+        # return redirect('social:profile') 
     else:
         user_form=UserEditForm(instance=request.user)
     context={
@@ -98,7 +99,7 @@ def ticket(request):
         form=TicketForm()
     return render(request,'forms/ticket.html',{'form':form})
 
-
+@login_required
 def post_list(request, tag_slug=None, username=None):
     posts = Post.objects.select_related('author').order_by('-total_likes')
     latest_users = User.objects.filter(is_active=True).order_by('-date_joined')[:4]
@@ -169,7 +170,7 @@ def post_detail(request,pk):
     }
     return render(request, 'social/detail.html',context)
 
-
+#for postgresse
 def post_search(request):
     query=None
     results=[]
@@ -187,20 +188,41 @@ def post_search(request):
     return render(request,'social/search.html',context)
 
 
+#for mysql
+# def post_search(request):
+#     query = None
+#     results = []
+#     if 'query' in request.GET:
+#         form = SearchForm(data=request.GET)
+#         if form.is_valid():
+#             query = form.cleaned_data['query']
+#             # You can search in multiple fields using Q objects
+#             results = Post.objects.filter(
+#                 Q(tags__name__icontains=query) | 
+#                 Q(description__icontains=query)
+#             ).distinct()  # Use distinct() if you want to avoid duplicates
+
+#     context = {
+#         'query': query,
+#         'results': results
+#     }
+    return render(request, 'social/search.html', context)
+
+
 @require_POST
 def post_comment_ajax(request):
     post_id = request.POST.get('post_id') 
     if post_id is not None:
         post=get_object_or_404(Post,id=post_id)
         writer=request.user
-        form=CommentForm(request.POST)#chon body ro ersal miknim injuri bgim khodesh mizre jash
-        if form.is_valid():#k space ina comment hesab nashe
+        form=CommentForm(request.POST)
+        if form.is_valid():
             comment = Comment(post=post,writer=writer)
             comment.body=form.cleaned_data['body']
             comment.save()
             comments_count = post.comments.count()
             # Serialize the comment data
-            serialized_comment = serialize('json', [comment], fields=('writer', 'body','created'))#ino balad nistm mituni bkhuni. vli age khode comment ro mifrestadim nmitunest ajzasho shamele body ina peida kne. fk knm chon json mifreste bayad aval json konimesh ba field hayi k mikhaim baad parse knim unvar
+            serialized_comment = serialize('json', [comment], fields=('writer', 'body','created'))
             response_data = {
                 'comment': serialized_comment,
                 'comments_count':comments_count
@@ -292,10 +314,10 @@ def like_post(request):
 def save_post(request):
     post_id = request.POST.get('post_id')
     if post_id is not None:
-        post = Post.objects.get(id=post_id)#getobjector404 bud like k frq ndre
+        post = Post.objects.get(id=post_id)
         user = request.user
 
-        if user in post.saved_by.all():#mse hmun like. esme field frq dre fqt
+        if user in post.saved_by.all():
             post.saved_by.remove(user)
             saved = False
         else:
@@ -308,7 +330,7 @@ def save_post(request):
 
 @login_required
 def user_list(request):
-    users = User.objects.prefetch_related('followers','following').filter(is_active=True).order_by('-date_joined') #chon az user default ers bari krdim active budn ers bari shode. mishe az admin rf useraro deactive krd ja hzf vqti mizni rushun. injuri karayi k krde pak nmishe vli dg login nmitune bkne
+    users = User.objects.prefetch_related('followers','following').filter(is_active=True).order_by('-date_joined') 
     return render(request, 'user/user_list.html', {'users': users})
 
 
@@ -321,7 +343,7 @@ def user_detail(request, username):
 @login_required
 @require_POST 
 def user_follow(request):
-    user_id = request.POST.get('id') #chizie k az smte ajax ersal mishe in id
+    user_id = request.POST.get('id') 
     follower_image_url = request.user.photo.url if request.user.photo else "{% static 'images/profile/Avatar.png' %}"
     
     if user_id:
@@ -329,10 +351,10 @@ def user_follow(request):
             user = User.objects.get(id=user_id)
             following_image_url = user.photo.url if request.user.photo else "{% static 'images/profile/Avatar.png' %}"
             if request.user in user.followers.all(): 
-                Contact.objects.filter(user_from=request.user, user_to=user).delete()#request.user khodemunim ps userfrom e. uni k az ajax ersal mishe user to e k mikhaim follo knimesh msln ya unfollow. tu like ina az field e many to many mun delete mikrdim un usero. vli inja chon jdvl khodemune ertebatate usero azash peyda miknim pak miknim
+                Contact.objects.filter(user_from=request.user, user_to=user).delete()
                 follow = False
             else:
-                Contact.objects.get_or_create(user_from=request.user, user_to=user) #get or create vse inke age vojud dasht etefaqi nayofteo varesh dre age nadasht ijadesh kne
+                Contact.objects.get_or_create(user_from=request.user, user_to=user) 
                 follow = True
             following_count = user.following.count()
             followers_count = user.followers.count()
@@ -364,7 +386,7 @@ def user_following(request,username):
 
 
 
-def post_likes(request,pk):#show people who liked
+def post_likes(request,pk):
     post=get_object_or_404(Post,id=pk)
     likes=post.likes.all()
     context={
